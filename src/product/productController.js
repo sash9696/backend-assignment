@@ -1,12 +1,26 @@
 const pool = require("../../db");
 const queries = require("./ProductQueries");
+const bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
+require("dotenv").config();
 
-const getProducts = (req, res) => {
-    pool.query(queries.getProducts, (error, result) => {
-        if(error) throw error;
-        res.status(200).send(result.rows);
-    })
-}
+const getProducts = async (req, res) => {
+    const token = req.header("auth-token");
+    const data = jwt.verify(token, process.env.JWT_SECRET);
+    const role = data.roles;
+    console.log("role in getproduct " + role);
+  
+    try {
+      const getPdt = await queries.getProducts();
+      if (!getPdt) {
+        res.send("Product does not exist");
+      } else {
+        res.status(200).send(getPdt.rows);
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
 const getProductsById = (req, res) => {
     
     const id = req.params.id;

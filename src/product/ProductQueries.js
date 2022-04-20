@@ -1,4 +1,10 @@
-const getProducts = "SELECT * FROM products";
+const pool = require('../../db')
+
+
+// const getProducts = "SELECT * FROM products";
+const getProducts = () => {
+    return pool.query("SELECT * FROM products")
+  }
 const getProductsById = "SELECT * FROM products WHERE id = $1";
 const isAdminAndVendor = "SELECT roles FROM users WHERE id = $1";
 const createProduct =
